@@ -1,0 +1,113 @@
+
+一键发布
+
+----拉取代码-update---
+#!/bin/bash
+
+SYSTEM_USER=$(cd $(dirname $0) && whoami)
+
+cd /home/${SYSTEM_USER}/source
+
+sudo rm -rf *
+
+git clone ssh://chenlu@smartgit:29418/mobileInternet/core/browser/articlemng
+
+cd /home/${SYSTEM_USER}/source/articlemng
+
+git checkout branch_20170619
+
+git pull
+
+----打包代码-build---
+cd /home/${SYSTEM_USER}/.m2/repository/com/vivo && rm -fr *
+
+cd /home/${SYSTEM_USER}/source/articlemng
+
+mvn clean && mvn -Dmaven.test.skip=true install
+
+#source /home/${SYSTEM_USER}/server.conf
+
+sudo rm -fr /opt/approot/*
+
+sudo mv /home/admin/source/articlemng/articlemng-web/target/articlemng.war /opt/approot/
+
+cd /opt/approot/
+
+sudo jar -xvf articlemng.war
+
+sudo rm -rf  /home/admin/war/*
+
+sudo mv articlemng.war  /home/admin/war/
+
+---发布deploy
+#!/bin/bash
+
+SYSTEM_USER=$(cd $(dirname $0) && whoami)
+#source /home/${SYSTEM_USER}/server.conf
+
+PID=`ps -ef | grep "/opt/apache-tomcat-7.0.72"|grep "org.apache.catalina.startup.Bootstrap" | grep -v grep | awk '{print $2}'`
+if [ -z $PID ]; then
+        echo "${appname} no process"
+else
+	echo "${appname} process is alive, PID is:$PID"
+	sudo kill -9 $PID
+fi
+
+sleep 1s
+
+cd /opt/apache-tomcat-7.0.72/bin &&  sudo ./startup.sh
+
+sleep 2s
+
+
+---onekey执行
+#!/bin/bash
+
+
+SYSTEM_USER=$(cd $(dirname $0) && whoami)
+
+/home/${SYSTEM_USER}/bin/update.sh
+
+/home/${SYSTEM_USER}/bin/build.sh
+
+/home/${SYSTEM_USER}/bin/deploy.sh
+
+
+****************************************maven打包main方法(spring)******************************
+
+<build>
+    <plugins>
+        <plugin>  
+            <groupId>org.apache.maven.plugins</groupId>  
+            <artifactId>maven-shade-plugin</artifactId>  
+            <version>2.4.1</version>  
+            <executions>  
+                <execution>
+                    <phase>package</phase>  
+                    <goals>
+                        <goal>shade</goal>  
+                    </goals>
+                    <configuration>
+                        <transformers>  
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">  
+                                <mainClass>com.xxg.Main</mainClass>  
+                            </transformer>  
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">  
+                                <resource>META-INF/spring.handlers</resource>  
+                            </transformer>  
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">  
+                                <resource>META-INF/spring.schemas</resource>  
+                            </transformer>  
+                        </transformers>
+                    </configuration>  
+                </execution>  
+            </executions>  
+        </plugin>  
+    </plugins>  
+</build>  
+
+
+
+
+
+
