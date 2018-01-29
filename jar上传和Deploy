@@ -1,0 +1,103 @@
+1 setting.xml配置用户名密码
+       <server>  
+      <id>nexus-releases</id>  
+      <username>admin</username>  
+      <password>admin123456</password>  
+    </server>  
+    <server>  
+      <id>nexus-snapshots</id>  
+      <username>admin</username>  
+      <password>admin123456</password>  
+    </server>
+    
+到Nexus上上传
+
+2 工程配置pom.xml，如下
+
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.vivo.internet</groupId>
+	<version>1.1.0.20170705-RELEASE</version>
+	<artifactId>articlecore-common-facade</artifactId>
+	<name>articlecore-common-facade</name>
+	<url>http://www.vivo.com.cn</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.3.2</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<distributionManagement>
+		<repository>
+			<id>nexus-releases</id>
+			<name>Local Nexus Repository</name>
+			<url>http://192.168.2.233:8081/nexus/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<name>Local Nexus Repository</name>
+			<url>http://192.168.2.233:8081/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+</project>
+
+在pom.xml同级目录下执行：mvn deploy
+
+3 
+
+mvn deploy:deploy-file -DgroupId=com.xy.oracle -DartifactId=ojdbc14 -Dversion=10.2.0.4.0 -Dpackaging=jar -Dfile=E:\ojdbc14.jar 
+
+
+-Durl=http://localhost:9090/nexus-2.2-01/content/repositories/thirdparty/ -DrepositoryId=thirdparty
+
+-Dmaven.test.skip=true                              //跳过编译、测试
+-Dfile=D:\MvnProject\service-mvn-1.0.0.jar          //jar包文件地址,绝对路径
+-DgroupId=pri.roy.mvn.test                          //gruopId--pom坐标，自定义
+-DartifactId=mvn-api                                //artifactId--pom坐标，自定义
+-Dversion                                           //版本号
+-Dpackaging                                         //打包方式
+-DrepositoryId                                      //远程库服务器ID
+thirdparty
+-Durl                                               //远程库服务器地址
+例如：
+http://192.168.2.233:8081/nexus/content/repositories/thirdparty/
+
+
+
+
+
