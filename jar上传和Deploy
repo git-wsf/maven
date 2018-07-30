@@ -1,3 +1,5 @@
+
+**********************************************************发布到远程仓库***********************************************************
 1 setting.xml配置用户名密码
        <server>  
       <id>nexus-releases</id>  
@@ -82,7 +84,6 @@
 
 mvn deploy:deploy-file -DgroupId=com.xy.oracle -DartifactId=ojdbc14 -Dversion=10.2.0.4.0 -Dpackaging=jar -Dfile=E:\ojdbc14.jar 
 
-
 -Durl=http://localhost:9090/nexus-2.2-01/content/repositories/thirdparty/ -DrepositoryId=thirdparty
 
 -Dmaven.test.skip=true                              //跳过编译、测试
@@ -97,6 +98,9 @@ thirdparty
 例如：
 http://192.168.2.233:8081/nexus/content/repositories/thirdparty/
 
+*******************************************************本地仓库发布jar********************************************************************************
+
+mvn install:install-file   -Dfile=E:\\cloud-browser-1.0-SNAPSHOT.jar  -DgroupId=com.vivo.v5  -DartifactId=cloud-browser -Dversion=1.0-SNAPSHOT  -Dpackaging=jar
 
 
 
