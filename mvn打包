@@ -104,36 +104,7 @@
 <activeProfiles>
     <activeProfile>redstar-nexus</activeProfile>
 </activeProfiles>
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
+
 项目中有相关pom.xml引入的jar配置：
 
 <!-- 引入父jar包 -->
@@ -151,36 +122,7 @@
     <version>1.0.2-SNAPSHOT</version>
   </dependency>
 </dependencies>
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-在使用项目的clean命令时，报错。因为默认是从maven的中央仓库中，更新jar报，但是报找不到parent中的引入jar包的。为了解决问题。在setting-main.xml文件中添加 <mirror>的相关配置：
 
-<mirror>
-            <id>private-mirror</id>
-            <mirrorOf>*</mirrorOf>
-            <name>private-mirror</name>
-            <url>http://nexus.*****.com/nexus/content/groups/public/</url>
-        </mirror>
-1
-2
-3
-4
-5
-6
 这样只解决了仓库引入的问题。snapshot的jar引入依然没有解决。 
 但是mirror的配置，只对release有效，对于snapshot无效的。所以我们添加个对snapshot有效的：
 
@@ -236,8 +178,27 @@
 
 snapshot的出现是解决release版本有变动要升级，在开发过程中造成频繁升级的问题的。maven会自动从仓库中检查引入服务的snapshot版本的最新版本，发现有要更新的时候进行下载的。默认每天一更新。通过updatePolicy控制（默认值是daily，表示Maven每天检查一次。其他可用的值包括：never-从不检查更新；always-每次构建都检查更新；interval：X-每隔X分钟检查一次更新（X为任意整数））
 	
-	
-	
+maven常量：
+	${basedir} 项目根目录 
+	${version}表示项目版本;
+	${project.basedir}同${basedir};
+	${project.version}表示项目版本,与${version}相同;
+	${project.build.directory} 构建目录，缺省为target
+	${project.build.sourceEncoding}表示主源码的编码格式;
+	${project.build.sourceDirectory}表示主源码路径;
+	${project.build.finalName}表示输出文件名称;
+	${project.build.outputDirectory} 构建过程输出目录，缺省为target/classes
+
+
+依赖项的作用域
+在定义项目的依赖项的时候，我们可以通过scope来指定该依赖项的作用范围。scope的取值有compile、runtime、test、provided、system和import。
+compile：这是依赖项的默认作用范围，即当没有指定依赖项的scope时默认使用compile。compile范围内的依赖项在所有情况下都是有效的，包括运行、测试和编译时。
+runtime：表示该依赖项只有在运行时才是需要的，在编译的时候不需要。这种类型的依赖项将在运行和test的类路径下可以访问。
+test：表示该依赖项只对测试时有用，包括测试代码的编译和运行，对于正常的项目运行是没有影响的。
+provided：表示该依赖项将由JDK或者运行容器在运行时提供，也就是说由Maven提供的该依赖项我们只有在编译和测试时才会用到，
+         而在运行时将由JDK或者运行容器提供。
+system：当scope为system时，表示该依赖项是我们自己提供的，不需要Maven到仓库里面去找。指定scope为system需要与另一个属性元素systemPath一起使用，
+        它表示该依赖项在当前系统的位置，使用的是绝对路径。
 	
 	
 	
